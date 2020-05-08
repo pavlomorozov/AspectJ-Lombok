@@ -41,7 +41,17 @@
 	<build>
 
 
+        <!-- 
         
+        To make AspectJ and Debugger work in Eclipse this line need
+        to be commented, then right click on project - maven - Update Project. This will make Eclips 
+        think that sources are under /src/main/java. Now uncomment the source directory path and 
+        run maven build: mvn clean package. 
+        
+        After this compiled code will contain AspectJ build on top of Lombok (/target/generated-sources/delombok folder) but 
+        Eclipse debugger will use src/main/java
+        
+        -->
         <sourceDirectory>${project.build.directory}/generated-sources/delombok</sourceDirectory>
         
 		<plugins>
