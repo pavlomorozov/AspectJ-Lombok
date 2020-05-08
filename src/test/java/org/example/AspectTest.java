@@ -9,6 +9,7 @@ public class AspectTest {
         POJO pojo = new POJO();
         pojo.setDataString("Hello test!");
         Observable o = new Observable(pojo);
+        //this method call will be intercepted in aspect
         o.someMethod();
     }
 

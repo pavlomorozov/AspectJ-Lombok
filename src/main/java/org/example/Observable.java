@@ -2,7 +2,7 @@ package org.example;
 
 public class Observable {
     
-    private POJO pojo;
+    protected POJO pojo;
     
     public Observable(POJO pojo) {
         this.pojo = pojo;

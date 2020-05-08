@@ -14,6 +14,7 @@
 		<aspectj.version>1.8.13</aspectj.version>
 		<maven.compiler.plugin.version>3.8.1</maven.compiler.plugin.version>
 		<lombok.version>1.18.8</lombok.version>
+		<build.sources>${project.basedir}/src/main/java</build.sources>
 	</properties>
 
 	<dependencies>
@@ -40,26 +41,16 @@
 
 	<build>
 
+		<!-- To make AspectJ and Debugger work in Eclipse this line need to be 
+			commented, then right click on project - maven - Update Project. This will 
+			make Eclips think that sources are under /src/main/java. Now uncomment the 
+			source directory path and run maven build: mvn clean package. After this 
+			compiled code will contain AspectJ build on top of Lombok (/target/generated-sources/delombok 
+			folder) but Eclipse debugger will use src/main/java -->
+		<sourceDirectory>${build.sources}</sourceDirectory>
 
-        <!-- 
-        
-        To make AspectJ and Debugger work in Eclipse this line need
-        to be commented, then right click on project - maven - Update Project. This will make Eclips 
-        think that sources are under /src/main/java. Now uncomment the source directory path and 
-        run maven build: mvn clean package. 
-        
-        After this compiled code will contain AspectJ build on top of Lombok (/target/generated-sources/delombok folder) but 
-        Eclipse debugger will use src/main/java
-        
-        -->
-        <sourceDirectory>${project.build.directory}/generated-sources/delombok</sourceDirectory>
-        
 		<plugins>
-
-
-
-            
-
+		
 			<plugin>
 				<groupId>org.projectlombok</groupId>
 				<artifactId>lombok-maven-plugin</artifactId>
@@ -73,67 +64,22 @@
 					</execution>
 				</executions>
 				<configuration>
-                    <addOutputDirectory>false</addOutputDirectory>
-                    <sourceDirectory>src/main/java</sourceDirectory>
-                </configuration>
+					<addOutputDirectory>false</addOutputDirectory>
+					<sourceDirectory>src/main/java</sourceDirectory>
+				</configuration>
 			</plugin>
 
-
-
-
-
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>aspectj-maven-plugin</artifactId>
-                <version>1.10</version>
-                <configuration>
-                    <complianceLevel>${java.version}</complianceLevel>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>compile</goal>
-                            <goal>test-compile</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
-
-<!-- 
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>aspectj-maven-plugin</artifactId>
-				<version>1.11</version>
-				<dependencies>
-					<dependency>
-						<groupId>org.aspectj</groupId>
-						<artifactId>aspectjrt</artifactId>
-						<version>${aspectj.version}</version>
-					</dependency>
-					<dependency>
-						<groupId>org.aspectj</groupId>
-						<artifactId>aspectjtools</artifactId>
-						<version>${aspectj.version}</version>
-					</dependency>
-				</dependencies>
+				<version>1.10</version>
 				<configuration>
-				
-				
-				    
-				    
-					<complianceLevel>1.8</complianceLevel>
-					<source>1.8</source>
-					<target>1.8</target>
-					<showWeaveInfo>true</showWeaveInfo>
-					<verbose>true</verbose>
-					<Xlint>ignore</Xlint>
+					<complianceLevel>${java.version}</complianceLevel>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
 				</configuration>
 				<executions>
 					<execution>
-						<phase>process-sources</phase>
 						<goals>
 							<goal>compile</goal>
 							<goal>test-compile</goal>
@@ -141,29 +87,46 @@
 					</execution>
 				</executions>
 			</plugin>
- -->
 
-
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>${maven.compiler.plugin.version}</version>
-                <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                </configuration>
-            </plugin>
-
-
-
-
-
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${maven.compiler.plugin.version}</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+			
 		</plugins>
-
-
-
-
 	</build>
+
+	<profiles>
+		<profile>
+			<id>development</id>
+			<activation>
+				<property>
+					<name>env</name>
+					<value>development</value>
+				</property>
+			</activation>
+			<properties>
+			    <build.sources>${project.basedir}/src/main/java</build.sources>
+			</properties>
+		</profile>
+
+		<profile>
+			<id>build</id>
+			<activation>
+				<property>
+					<name>env</name>
+					<value>build</value>
+				</property>
+			</activation>
+			<properties>
+			     <build.sources>${project.build.directory}/generated-sources/delombok</build.sources>
+			</properties>
+		</profile>
+	</profiles>
 
 </project>
